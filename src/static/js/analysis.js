@@ -1,4 +1,4 @@
-// ARQV30 Enhanced v2.0 - Análise JavaScript Aprimorado
+// ARQV30 Enhanced v2.0 - Análise JavaScript Ultra-Robusto
 // Sistema de feedback em tempo real e exibição de resultados ultra-detalhados
 
 class AnalysisManager {
@@ -228,6 +228,12 @@ class AnalysisManager {
         this.displayActionPlanSection(result.plano_acao_90_dias);
         this.displayInsightsSection(result.insights_exclusivos);
         this.displayMetadataSection(result.metadata);
+        
+        // Novas seções ultra-detalhadas
+        this.displayDriversSection(result.drivers_mentais_customizados);
+        this.displayVisualProofsSection(result.provas_visuais_sugeridas);
+        this.displayAntiObjectionSection(result.sistema_anti_objecao);
+        this.displayPrePitchSection(result.pre_pitch_invisivel);
 
         // Habilita botão de download PDF
         this.enablePdfDownload(result);
@@ -239,12 +245,12 @@ class AnalysisManager {
         const container = document.getElementById('avatarResults');
         if (!container) return;
 
-        container.innerHTML = `
+        let html = `
             <div class="result-section">
                 <h3 class="section-title">🎯 Avatar Ultra-Detalhado</h3>
                 <div class="avatar-card">
                     <div class="avatar-header">
-                        <h4>${avatar.nome_ficticio || 'Avatar Personalizado'}</h4>
+                        <h4>${avatar.nome_ficticio || 'Avatar Ultra-Detalhado'}</h4>
                     </div>
                     
                     <div class="avatar-content">
@@ -258,6 +264,11 @@ class AnalysisManager {
                             ${this.renderObjectAsCards(avatar.perfil_psicografico)}
                         </div>
                         
+                        <div class="avatar-language">
+                            <h5>💬 Linguagem Interna</h5>
+                            ${this.renderObjectAsCards(avatar.linguagem_interna)}
+                        </div>
+                        
                         <div class="avatar-pains">
                             <h5>💔 Dores Viscerais</h5>
                             ${this.renderObjectAsCards(avatar.dores_viscerais)}
@@ -266,6 +277,16 @@ class AnalysisManager {
                         <div class="avatar-desires">
                             <h5>✨ Desejos Secretos</h5>
                             ${this.renderObjectAsCards(avatar.desejos_secretos)}
+                        </div>
+                        
+                        <div class="avatar-objections">
+                            <h5>🚫 Objeções Reais</h5>
+                            ${this.renderListAsCards(avatar.objecoes_reais)}
+                        </div>
+                        
+                        <div class="avatar-journey">
+                            <h5>🌟 Jornada Emocional</h5>
+                            ${this.renderObjectAsCards(avatar.jornada_emocional)}
                         </div>
                         
                         <div class="avatar-language">
@@ -286,6 +307,8 @@ class AnalysisManager {
                 </div>
             </div>
         `;
+        
+        container.innerHTML = html;
     }
 
     displayDriversSection(drivers) {
@@ -294,20 +317,40 @@ class AnalysisManager {
         const container = document.getElementById('driversResults');
         if (!container) return;
 
-        const driversHtml = drivers.map(driver => `
+        const driversHtml = drivers.map((driver, index) => `
             <div class="driver-card">
-                <h4>${driver.nome || 'Driver Mental'}</h4>
+                <h4>${driver.nome || `Driver Mental ${index + 1}`}</h4>
                 <div class="driver-content">
                     <p><strong>Gatilho Central:</strong> ${driver.gatilho_central || 'N/A'}</p>
                     <p><strong>Definição:</strong> ${driver.definicao_visceral || 'N/A'}</p>
                     <p><strong>Roteiro de Ativação:</strong> ${driver.roteiro_ativacao || 'N/A'}</p>
                     <p><strong>Momento Ideal:</strong> ${driver.momento_ideal || 'N/A'}</p>
+                    
+                    ${driver.roteiro_ativacao && typeof driver.roteiro_ativacao === 'object' ? `
+                        <div class="driver-script">
+                            <h6>📋 Roteiro Detalhado:</h6>
+                            <p><strong>Pergunta de Abertura:</strong> ${driver.roteiro_ativacao.pergunta_abertura || 'N/A'}</p>
+                            <p><strong>História/Analogia:</strong> ${driver.roteiro_ativacao.historia_analogia || 'N/A'}</p>
+                            <p><strong>Metáfora Visual:</strong> ${driver.roteiro_ativacao.metafora_visual || 'N/A'}</p>
+                            <p><strong>Comando de Ação:</strong> ${driver.roteiro_ativacao.comando_acao || 'N/A'}</p>
+                        </div>
+                    ` : ''}
+                    
                     ${driver.frases_ancoragem ? `
                         <div class="anchor-phrases">
                             <strong>Frases de Ancoragem:</strong>
                             <ul>
                                 ${driver.frases_ancoragem.map(frase => `<li>"${frase}"</li>`).join('')}
                             </ul>
+                        </div>
+                    ` : ''}
+                    
+                    ${driver.prova_logica && typeof driver.prova_logica === 'object' ? `
+                        <div class="logical-proof">
+                            <h6>📊 Prova Lógica:</h6>
+                            <p><strong>Estatística:</strong> ${driver.prova_logica.estatistica || 'N/A'}</p>
+                            <p><strong>Caso/Exemplo:</strong> ${driver.prova_logica.caso_exemplo || 'N/A'}</p>
+                            <p><strong>Demonstração:</strong> ${driver.prova_logica.demonstracao || 'N/A'}</p>
                         </div>
                     ` : ''}
                 </div>
@@ -322,6 +365,143 @@ class AnalysisManager {
                 </div>
             </div>
         `;
+    }
+
+    displayVisualProofsSection(proofs) {
+        if (!proofs || !Array.isArray(proofs)) return;
+
+        const container = document.getElementById('visualProofsResults');
+        if (!container) return;
+
+        const proofsHtml = proofs.map((proof, index) => `
+            <div class="proof-card">
+                <h4>${proof.nome || `Prova Visual ${index + 1}`}</h4>
+                <div class="proof-content">
+                    <p><strong>Conceito Alvo:</strong> ${proof.conceito_alvo || 'N/A'}</p>
+                    <p><strong>Experimento:</strong> ${proof.experimento || 'N/A'}</p>
+                    <p><strong>Analogia:</strong> ${proof.analogia || 'N/A'}</p>
+                    
+                    ${proof.materiais ? `
+                        <div class="materials">
+                            <strong>Materiais Necessários:</strong>
+                            <ul>${proof.materiais.map(material => `<li>${material}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    
+                    ${proof.roteiro_completo ? `
+                        <div class="complete-script">
+                            <strong>Roteiro Completo:</strong>
+                            <p>${proof.roteiro_completo}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = `
+            <div class="result-section">
+                <h3 class="section-title">🎭 Provas Visuais Sugeridas</h3>
+                <div class="proofs-grid">
+                    ${proofsHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    displayAntiObjectionSection(antiObjection) {
+        if (!antiObjection) return;
+
+        const container = document.getElementById('antiObjectionResults');
+        if (!container) return;
+
+        let html = `
+            <div class="result-section">
+                <h3 class="section-title">🛡️ Sistema Anti-Objeção</h3>
+                <div class="anti-objection-content">
+        `;
+
+        // Objeções universais
+        if (antiObjection.objecoes_universais) {
+            html += `<div class="universal-objections">
+                <h4>🌍 Objeções Universais</h4>`;
+            
+            Object.entries(antiObjection.objecoes_universais).forEach(([key, objection]) => {
+                html += `
+                    <div class="objection-card">
+                        <h5>${key.charAt(0).toUpperCase() + key.slice(1)}</h5>
+                        <p><strong>Objeção:</strong> ${objection.objecao || 'N/A'}</p>
+                        <p><strong>Raiz Emocional:</strong> ${objection.raiz_emocional || 'N/A'}</p>
+                        <p><strong>Contra-ataque:</strong> ${objection.contra_ataque || 'N/A'}</p>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        }
+
+        // Arsenal de emergência
+        if (antiObjection.arsenal_emergencia) {
+            html += `
+                <div class="emergency-arsenal">
+                    <h4>🚨 Arsenal de Emergência</h4>
+                    <ul>
+                        ${antiObjection.arsenal_emergencia.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    displayPrePitchSection(prePitch) {
+        if (!prePitch) return;
+
+        const container = document.getElementById('prePitchResults');
+        if (!container) return;
+
+        let html = `
+            <div class="result-section">
+                <h3 class="section-title">🎯 Pré-Pitch Invisível</h3>
+                <div class="pre-pitch-content">
+        `;
+
+        // Orquestração emocional
+        if (prePitch.orquestracao_emocional && prePitch.orquestracao_emocional.sequencia_psicologica) {
+            html += `
+                <div class="emotional-orchestration">
+                    <h4>🎼 Orquestração Emocional</h4>
+                    <div class="sequence-timeline">
+            `;
+            
+            prePitch.orquestracao_emocional.sequencia_psicologica.forEach(fase => {
+                html += `
+                    <div class="phase-card">
+                        <h5>${fase.fase}</h5>
+                        <p><strong>Objetivo:</strong> ${fase.objetivo}</p>
+                        <p><strong>Tempo:</strong> ${fase.tempo}</p>
+                        ${fase.tecnicas ? `<p><strong>Técnicas:</strong> ${fase.tecnicas.join(', ')}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+        }
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
     }
 
     displayCompetitionSection(competition) {
@@ -680,7 +860,17 @@ class AnalysisManager {
             </div>
         `;
     }
-
+    
+    renderListAsCards(list) {
+        if (!list || !Array.isArray(list)) return '<p>Não informado</p>';
+        
+        return list.map(item => `
+            <div class="info-card">
+                <span>${item}</span>
+            </div>
+        `).join('');
+    }
+    
     renderObjectAsCards(obj) {
         if (!obj || typeof obj !== 'object') return '<p>Não informado</p>';
 
@@ -813,4 +1003,3 @@ class AnalysisManager {
 document.addEventListener('DOMContentLoaded', () => {
     window.analysisManager = new AnalysisManager();
 });
-
