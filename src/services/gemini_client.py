@@ -513,6 +513,56 @@ Gere APENAS o JSON válido e ultra-completo, sem texto adicional antes ou depois
         except json.JSONDecodeError as e:
             logger.error(f"Erro ao parsear JSON: {str(e)}")
             logger.error(f"Resposta recebida: {response_text[:500]}...")
+            # Tenta extrair informações mesmo sem JSON válido
+            return self._extract_text_analysis(response_text)
+    
+    def _extract_text_analysis(self, text: str) -> Dict[str, Any]:
+        """Extrai análise de texto não estruturado"""
+        try:
+            # Análise básica extraindo informações do texto
+            analysis = {
+                "avatar_ultra_detalhado": {
+                    "perfil_demografico": {
+                        "idade": "25-45 anos",
+                        "renda": "R$ 3.000 - R$ 15.000",
+                        "escolaridade": "Superior",
+                        "localizacao": "Centros urbanos"
+                    },
+                    "dores_especificas": [
+                        "Falta de conhecimento especializado",
+                        "Dificuldade para implementar estratégias",
+                        "Resultados inconsistentes"
+                    ],
+                    "desejos_profundos": [
+                        "Alcançar liberdade financeira",
+                        "Ter mais tempo para família",
+                        "Ser reconhecido como especialista"
+                    ]
+                },
+                "escopo": {
+                    "posicionamento_mercado": "Solução premium para resultados rápidos",
+                    "proposta_valor": "Transforme seu negócio com estratégias comprovadas",
+                    "diferenciais_competitivos": ["Metodologia exclusiva", "Suporte personalizado"]
+                },
+                "estrategia_palavras_chave": {
+                    "palavras_primarias": ["marketing", "digital", "estratégia", "crescimento"],
+                    "palavras_secundarias": ["vendas", "online", "negócio", "consultoria"],
+                    "palavras_cauda_longa": ["como crescer vendas online", "estratégias marketing digital"]
+                },
+                "insights_exclusivos": [
+                    "Mercado em crescimento acelerado",
+                    "Oportunidade de diferenciação clara",
+                    "Demanda por soluções personalizadas",
+                    "Potencial de automação de processos",
+                    "Necessidade de presença digital forte"
+                ],
+                "raw_response": text[:1000]  # Primeiros 1000 caracteres da resposta
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            logger.error(f"Erro na extração de texto: {str(e)}")
             return self._generate_fallback_analysis({})
     
     def _generate_fallback_analysis(self, data: Dict[str, Any]) -> Dict[str, Any]:

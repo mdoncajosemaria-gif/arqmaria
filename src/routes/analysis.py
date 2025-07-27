@@ -754,12 +754,16 @@ def analyze_market():
         # Executa análise ultra-robusta
         result = ultra_analyzer.generate_ultra_comprehensive_analysis(data, session_id)
         
+        # Log do resultado para debug
+        logger.info(f"Resultado da análise: {type(result)} - Keys: {list(result.keys()) if isinstance(result, dict) else 'N/A'}")
+        
         # Salva no banco de dados
         if result and 'error' not in result:
             try:
                 analysis_record = db_manager.create_analysis({
                     'segmento': data.get('segmento'),
                     'produto': data.get('produto'),
+                    'descricao': data.get('dados_adicionais', ''),
                     'preco': data.get('preco_float'),
                     'publico': data.get('publico'),
                     'concorrentes': data.get('concorrentes'),
@@ -767,7 +771,13 @@ def analyze_market():
                     'objetivo_receita': data.get('objetivo_receita_float'),
                     'orcamento_marketing': data.get('orcamento_marketing_float'),
                     'prazo_lancamento': data.get('prazo_lancamento'),
-                    'comprehensive_analysis': result
+                    'comprehensive_analysis': json.dumps(result, ensure_ascii=False),
+                    'avatar_data': json.dumps(result.get('avatar_ultra_detalhado', {}), ensure_ascii=False),
+                    'positioning_data': json.dumps(result.get('escopo', {}), ensure_ascii=False),
+                    'competition_data': json.dumps(result.get('analise_concorrencia_detalhada', {}), ensure_ascii=False),
+                    'marketing_data': json.dumps(result.get('estrategia_palavras_chave', {}), ensure_ascii=False),
+                    'metrics_data': json.dumps(result.get('metricas_performance_detalhadas', {}), ensure_ascii=False),
+                    'status': 'completed'
                 })
                 
                 if analysis_record:

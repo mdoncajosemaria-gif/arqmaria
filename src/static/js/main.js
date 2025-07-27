@@ -177,6 +177,12 @@ class ARQV30App {
             }
             
             const result = await response.json();
+            
+            // Valida se o resultado tem dados válidos
+            if (!result || typeof result !== 'object') {
+                throw new Error('Resposta inválida do servidor');
+            }
+            
             this.currentAnalysis = result;
             
             this.hideLoading();
@@ -262,6 +268,11 @@ class ARQV30App {
     buildResultsHTML(result) {
         let html = '';
         
+        // Verifica se há dados válidos
+        if (!result || typeof result !== 'object') {
+            return '<div class="error-message">Erro: Dados de análise inválidos</div>';
+        }
+        
         // Avatar section
         if (result.avatar_ultra_detalhado) {
             html += this.buildAvatarSection(result.avatar_ultra_detalhado);
@@ -272,34 +283,26 @@ class ARQV30App {
             html += this.buildPositioningSection(result.escopo);
         }
         
-        // Competition section
-        if (result.analise_concorrencia_detalhada) {
-            html += this.buildCompetitionSection(result.analise_concorrencia_detalhada);
-        }
-        
         // Marketing section
         if (result.estrategia_palavras_chave) {
             html += this.buildMarketingSection(result.estrategia_palavras_chave);
         }
         
-        // Metrics section
-        if (result.metricas_performance_detalhadas) {
-            html += this.buildMetricsSection(result.metricas_performance_detalhadas);
-        }
-        
-        // Projections section
-        if (result.projecoes_cenarios) {
-            html += this.buildProjectionsSection(result.projecoes_cenarios);
-        }
-        
-        // Action plan section
-        if (result.plano_acao_detalhado) {
-            html += this.buildActionPlanSection(result.plano_acao_detalhado);
-        }
-        
         // Insights section
-        if (result.insights_exclusivos) {
-            html += this.buildInsightsSection(result.insights_exclusivos);
+        if (result.insights_exclusivos || result.insights_exclusivos_ultra) {
+            const insights = result.insights_exclusivos || result.insights_exclusivos_ultra || [];
+            html += this.buildInsightsSection(insights);
+        }
+        
+        // Raw response section (for debugging)
+        if (result.raw_response) {
+            html += this.buildRawResponseSection(result.raw_response);
+        }
+        
+        // Metadata section
+        if (result.metadata_gemini || result.metadata_ultra_detalhado) {
+            const metadata = result.metadata_gemini || result.metadata_ultra_detalhado || {};
+            html += this.buildMetadataSection(metadata);
         }
         
         return html;
@@ -631,6 +634,64 @@ class ARQV30App {
     initializeResultComponents() {
         // Re-initialize expandable sections for results
         this.initializeExpandableSections();
+    }
+    
+    buildRawResponseSection(rawResponse) {
+        return `
+            <div class="result-section">
+                <div class="result-section-header">
+                    <i class="fas fa-code"></i>
+                    <h4>Resposta Bruta da IA</h4>
+                </div>
+                <div class="result-section-content">
+                    <div class="expandable-section">
+                        <div class="expandable-header">
+                            <div class="expandable-title">
+                                <i class="fas fa-eye"></i>
+                                Ver Resposta Completa
+                            </div>
+                            <i class="fas fa-chevron-down expandable-icon"></i>
+                        </div>
+                        <div class="expandable-content">
+                            <pre style="white-space: pre-wrap; background: #f8f9fa; padding: 15px; border-radius: 8px; font-size: 12px; max-height: 400px; overflow-y: auto;">${rawResponse}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    buildMetadataSection(metadata) {
+        return `
+            <div class="result-section">
+                <div class="result-section-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h4>Informações da Análise</h4>
+                </div>
+                <div class="result-section-content">
+                    <div class="metadata-grid">
+                        <div class="metadata-item">
+                            <span class="metadata-label">Modelo IA:</span>
+                            <span class="metadata-value">${metadata.model || 'Gemini Pro'}</span>
+                        </div>
+                        <div class="metadata-item">
+                            <span class="metadata-label">Versão:</span>
+                            <span class="metadata-value">${metadata.version || '2.0.0'}</span>
+                        </div>
+                        <div class="metadata-item">
+                            <span class="metadata-label">Gerado em:</span>
+                            <span class="metadata-value">${new Date(metadata.generated_at || Date.now()).toLocaleString('pt-BR')}</span>
+                        </div>
+                        ${metadata.quality_score ? `
+                            <div class="metadata-item">
+                                <span class="metadata-label">Score de Qualidade:</span>
+                                <span class="metadata-value">${metadata.quality_score}%</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
     }
     
     formatLabel(key) {

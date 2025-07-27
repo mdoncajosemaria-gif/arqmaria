@@ -19,7 +19,7 @@ class HuggingFaceClient:
     def __init__(self):
         """Inicializa cliente HuggingFace"""
         self.api_key = os.getenv("HUGGINGFACE_API_KEY")
-        self.model_name = os.getenv("HUGGINGFACE_MODEL_NAME", "meta-llama/Meta-Llama-3-70B")
+        self.model_name = os.getenv("HUGGINGFACE_MODEL_NAME", "microsoft/DialoGPT-medium")
         self.base_url = f"https://api-inference.huggingface.co/models/{self.model_name}"
         
         self.headers = {
@@ -56,7 +56,8 @@ class HuggingFaceClient:
                 "inputs": prompt,
                 "parameters": {
                     "max_new_tokens": max_tokens,
-                    "temperature": temperature
+                    "temperature": temperature,
+                    "return_full_text": False
                 }
             }
             

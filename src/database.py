@@ -60,7 +60,13 @@ class DatabaseManager:
                 'objetivo_receita': analysis_data.get('objetivo_receita'),
                 'orcamento_marketing': analysis_data.get('orcamento_marketing'),
                 'prazo_lancamento': analysis_data.get('prazo_lancamento', ''),
-                'status': 'pending',
+                'status': analysis_data.get('status', 'completed'),
+                'avatar_data': analysis_data.get('avatar_data'),
+                'positioning_data': analysis_data.get('positioning_data'),
+                'competition_data': analysis_data.get('competition_data'),
+                'marketing_data': analysis_data.get('marketing_data'),
+                'metrics_data': analysis_data.get('metrics_data'),
+                'comprehensive_analysis': analysis_data.get('comprehensive_analysis'),
                 'created_at': datetime.now().isoformat(),
                 'updated_at': datetime.now().isoformat()
             }

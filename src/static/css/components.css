@@ -578,6 +578,44 @@
     opacity: 1;
 }
 
+/* Error Messages */
+.error-message {
+    background: #fee;
+    border: 1px solid #fcc;
+    color: #c33;
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    margin: var(--spacing-4) 0;
+}
+
+/* Metadata Grid */
+.metadata-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-4);
+}
+
+.metadata-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-3);
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--gray-200);
+}
+
+.metadata-label {
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.metadata-value {
+    color: var(--gray-600);
+    font-family: monospace;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .avatar-grid {
