@@ -1002,4 +1002,3 @@ class ARQV30App {
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new ARQV30App();
 });
-
